@@ -1,30 +1,21 @@
 import React from 'react';
 import Head from '../components/head';
+import 'isomorphic-unfetch';
 
 export default class Input extends React.Component {
   state = {
-    value: '',
-    posts: []
+    value: ''
   };
 
-  componentDidMount = () => {
-    this.fetchData();
-  };
-
-  fetchData = () => {
-    fetch('https://next.json-generator.com/api/json/get/NkGzLjtWB')
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ posts: data, isLoading: false });
-      });
-  };
+  static async getInitialProps() {
+    const posts = await fetch(
+      'https://next.json-generator.com/api/json/get/NkGzLjtWB'
+    ).then(response => response.json());
+    return { posts };
+  }
 
   onChangeText = event => {
     this.setState({ value: event.target.value });
-  };
-
-  onClickButton = () => {
-    this.fetchData();
   };
 
   render = () => {
@@ -33,8 +24,7 @@ export default class Input extends React.Component {
         <Head title="Home" />
         <input type="text" onChange={this.onChangeText} />
         <p>{this.state.value}</p>
-        <button onClick={this.onClickButton}>click me</button>
-        {this.state.posts.map(post => {
+        {this.props.posts.map(post => {
           return <p>{post.title}</p>;
         })}
       </div>
