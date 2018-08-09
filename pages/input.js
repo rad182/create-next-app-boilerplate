@@ -4,16 +4,27 @@ import 'isomorphic-unfetch';
 
 export default class Input extends React.Component {
   state = {
-    value: ''
+    value: '',
+    userAgent: null
   };
 
   static async getInitialProps({ req }) {
     const posts = await fetch(
       'https://next.json-generator.com/api/json/get/NkGzLjtWB'
     ).then(response => response.json());
-    const userAgent = req ? req.headers['user-agent'] : navigator.userAgent;
-    return { posts, userAgent };
+
+    return { posts };
   }
+
+  componentDidMount = () => {
+    let userAgent = null;
+    if (req != null && req.headers != null) {
+      userAgent = req.headers['user-agent'];
+    } else if (navigator) {
+      userAgent = navigator.userAgent;
+    }
+    this.setState({ userAgent });
+  };
 
   onChangeText = event => {
     this.setState({ value: event.target.value });
@@ -25,7 +36,7 @@ export default class Input extends React.Component {
         <Head title="input" />
         <input type="text" onChange={this.onChangeText} />
         <p>{this.state.value}</p>
-        <p>Hello World {this.props.userAgent}</p>
+        <p>Hello World {this.state.userAgent}</p>
 
         {this.props.posts.map(post => {
           return <p key={post.id}>{post.title}</p>;
