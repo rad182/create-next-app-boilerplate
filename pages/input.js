@@ -7,11 +7,12 @@ export default class Input extends React.Component {
     value: ''
   };
 
-  static async getInitialProps() {
+  static async getInitialProps({ req }) {
     const posts = await fetch(
       'https://next.json-generator.com/api/json/get/NkGzLjtWB'
     ).then(response => response.json());
-    return { posts };
+    const userAgent = req ? req.headers['user-agent'] : navigator.userAgent;
+    return { posts, userAgent };
   }
 
   onChangeText = event => {
@@ -21,11 +22,13 @@ export default class Input extends React.Component {
   render = () => {
     return (
       <div>
-        <Head title="Home" />
+        <Head title="input" />
         <input type="text" onChange={this.onChangeText} />
         <p>{this.state.value}</p>
+        <p>Hello World {this.props.userAgent}</p>
+
         {this.props.posts.map(post => {
-          return <p>{post.title}</p>;
+          return <p key={post.id}>{post.title}</p>;
         })}
       </div>
     );
