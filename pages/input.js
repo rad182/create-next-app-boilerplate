@@ -13,13 +13,13 @@ export default class Input extends React.Component {
       'https://next.json-generator.com/api/json/get/NkGzLjtWB'
     ).then(response => response.json());
 
-    return { posts };
+    return { posts, req };
   }
 
   componentDidMount = () => {
     let userAgent = null;
-    if (req != null && req.headers != null) {
-      userAgent = req.headers['user-agent'];
+    if (this.props.req != null && this.props.req.headers != null) {
+      userAgent = this.props.req.headers['user-agent'];
     } else if (navigator) {
       userAgent = navigator.userAgent;
     }
